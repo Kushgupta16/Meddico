@@ -22,6 +22,11 @@ class _BottomnavState extends State<Bottomnav> {
     return Scaffold(
         body: pageList[pageIndex],
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          selectedIconTheme: IconThemeData(color: Colors.black),
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.black.withOpacity(0.3),
+          showUnselectedLabels: false,
           currentIndex: pageIndex,
           onTap: (value) {
             setState(() {
