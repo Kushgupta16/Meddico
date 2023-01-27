@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:meddico/Screen/HomeScreen/homescreen.dart';
 import 'package:meddico/Screen/Medicine/medicine.dart';
 import 'package:meddico/Screen/Profile/profile.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: Bottomnav(),
     );
