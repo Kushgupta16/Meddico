@@ -3,6 +3,7 @@ import 'package:meddico/Screen/HomeScreen/homescreen.dart';
 import 'package:meddico/Screen/Medicine/medicine.dart';
 import 'package:meddico/Screen/Profile/profile.dart';
 import 'package:meddico/Screen/bottomnav.dart';
+import 'package:meddico/Screen/LoginPage/LoginPage.dart';
 import 'package:meddico/main.dart';
 
 void main() {
@@ -17,7 +18,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Bottomnav(),
+      // home: Bottomnav(),
+      routes: {
+        "/": (context) => LoginPage(),
+        "/login": (context) => LoginPage(),
+      },
     );
   }
 }
