@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:meddico/components/my_button.dart';
+import 'package:meddico/components/my_textfield.dart';
+import 'package:meddico/components/square_tile.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -12,45 +15,33 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 50),
-
-              // logo
-              const Icon(
-                Icons.lock,
-                size: 100,
-              ),
-
               const SizedBox(height: 50),
-
               Text(
-                'Welcome back you\'ve been missed!',
+                'Welcome Back ',
                 style: TextStyle(
                   color: Colors.grey[700],
-                  fontSize: 16,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-
-              const SizedBox(height: 25),
+              const SizedBox(height: 60),
               MyTextField(
                 controller: usernameController,
                 hintText: 'Username',
                 obscureText: false,
               ),
-
               const SizedBox(height: 10),
-
-              // password textfield
               MyTextField(
                 controller: passwordController,
                 hintText: 'Password',
                 obscureText: true,
               ),
-
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -64,15 +55,11 @@ class LoginPage extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 25),
               MyButton(
                 onTap: signUserIn,
               ),
-
               const SizedBox(height: 50),
-
-              // or continue with
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
@@ -99,7 +86,6 @@ class LoginPage extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +93,6 @@ class LoginPage extends StatelessWidget {
                   SquareTile(imagePath: 'lib/images/google.png'),
                 ],
               ),
-
               const SizedBox(height: 50),
             ],
           ),
