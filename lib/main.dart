@@ -19,11 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Bottomnav(),
-      // routes: {
-      //   "/": (context) => LoginPage(),
-      //   "/login": (context) => LoginPage(),
-      // },
+      // home: Bottomnav(),
+      routes: {
+        "/": (context) => LoginPage(),
+        "/login": (context) => LoginPage(),
+      },
     );
   }
 }
