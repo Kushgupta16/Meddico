@@ -39,10 +39,12 @@ dependencies:
   firebase_analytics: ^10.1.0
   image_picker: ^0.8.6+1
   get: ^4.6.5
+  quantity_input: ^1.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  beauty_navigation: any
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
