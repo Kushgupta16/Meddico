@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:meddico/components/my_button.dart';
 import 'package:meddico/components/my_textfield.dart';
 import 'package:meddico/components/square_tile.dart';
+import 'package:meddico/services/auth_service.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -93,8 +94,11 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  SquareTile(imagePath: 'lib/images/google.png'),
+                children: [
+                  SquareTile(
+                    onTap: () => AuthService().signInWithGoogle(),
+                    imagePath: 'lib/images/google.png',
+                  ),
                 ],
               ),
               const SizedBox(height: 50),
