@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meddico/components/medcount.dart';
 import 'package:quantity_input/quantity_input.dart';
 
 class Medicine extends StatefulWidget {
@@ -73,7 +72,7 @@ class _MedicineState extends State<Medicine> {
                     SizedBox(
                       height: 12,
                     ),
-                    Column(
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
@@ -84,6 +83,27 @@ class _MedicineState extends State<Medicine> {
                           child: Text('Pills Name',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 19)),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              height: 40,
+                              width: 41,
+                              margin: EdgeInsets.only(right: 9,top: 30 ),
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(1),
+                                  child: Image.asset('lib/images/drug (1).png'),
+                                ),
+                              )
+
+
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -91,7 +111,7 @@ class _MedicineState extends State<Medicine> {
                       children: [
                         Container(
                             padding: EdgeInsets.only(left: 5, right: 12),
-                            margin: EdgeInsets.only(top: 73.5, left: 12),
+                            margin: EdgeInsets.only(top: 83.5, left: 12),
                             child: Container(
                               decoration: BoxDecoration(boxShadow: [
                                 BoxShadow(
@@ -140,9 +160,10 @@ class _MedicineState extends State<Medicine> {
                               ),
                             )
                           ],
-                        )
+                        ),
                       ],
                     ),
+
                   ],
                 ),
               ),

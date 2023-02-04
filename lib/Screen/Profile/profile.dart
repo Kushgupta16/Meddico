@@ -15,7 +15,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
     child: ListView(
@@ -197,7 +197,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.lightBlueAccent,
               width: 2,
             )),
-        labelText: "About",
+        labelText: "Allergen Info",
         labelStyle: TextStyle(color: Colors.lightBlueAccent),
         helperText: "Write about yourself",
         hintText: "I am Dev Stack",
