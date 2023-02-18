@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meddico/Models/medicine_type.dart';
+import 'package:meddico/Models/pill.dart';
+import 'package:meddico/Screen/Medicine/medicinecard.dart';
 import 'package:quantity_input/quantity_input.dart';
 
 class Medicine extends StatefulWidget {
@@ -12,6 +14,13 @@ class Medicine extends StatefulWidget {
 class _MedicineState extends State<Medicine> {
   late TextEditingController nameController;
   late TextEditingController amountController;
+
+  final List<MedicineType> medicineTypes = [
+    MedicineType("Syrup", Image.asset("lib/images/bottle.png"), true),
+    MedicineType("Pill", Image.asset("lib/images/drug (1).png"), false),
+    MedicineType("Tablet", Image.asset("lib/images/pills (1).png"), false),
+    MedicineType("Syringe", Image.asset("lib/images/injection.png"), false),
+  ];
 
   int simpleIntInput = 1;
   @override
@@ -26,6 +35,13 @@ class _MedicineState extends State<Medicine> {
     super.initState();
     nameController = TextEditingController();
     amountController = TextEditingController();
+  }
+
+  void medicineTypeClick(MedicineType medicine) {
+    setState(() {
+      medicineTypes.forEach((MedicineType) => medicineType.isChoose = false);
+      medicineTypes[medicineType.indexOf(medicine)].isChoose = true;
+    });
   }
 
   Widget build(BuildContext context) {
@@ -83,33 +99,44 @@ class _MedicineState extends State<Medicine> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 19)),
                         ),
-                        StreamBuilder(builder: (context, snapshot) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              MedicineTypeRow(
-                                  medicineType: MedicineType.pill,
-                                  iconValue: 'lib/images/drug (1).png',
-                                  isSelected: snapshot.data == MedicineType.pill
-                                      ? true
-                                      : false),
-                              MedicineTypeRow(
-                                  medicineType: MedicineType.bottle,
-                                  iconValue: 'lib/images/bottle.png',
-                                  isSelected:
-                                      snapshot.data == MedicineType.bottle
-                                          ? true
-                                          : false),
-                              MedicineTypeRow(
-                                  medicineType: MedicineType.tablet,
-                                  iconValue: 'lib/images/pills (1).png',
-                                  isSelected:
-                                      snapshot.data == MedicineType.tablet
-                                          ? true
-                                          : false)
-                            ],
-                          );
-                        })
+                         Container(
+                          height: 12,
+                          child: ListView(
+                          shrinkWrap: true,
+                          children: <Widget>[
+                            ...medicineTypes.map(
+                                (type) => MedicineCard(type, medicineTypeClick))
+        ]
+    )
+
+
+    )
+    ],
+    ),
+                    Column(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.only(left: 5, right: 12),
+                            margin: EdgeInsets.only(top: 83.5, left: 12),
+                            child: Container(
+                              decoration: BoxDecoration(boxShadow: [
+                                BoxShadow(
+                                    blurRadius: 20,
+                                    color: Colors.white.withOpacity(0.1))
+                              ]),
+                              child: TextFormField(
+                                controller: nameController,
+                                cursorColor: Colors.black,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                              ),
+                            ))
                       ],
                     ),
                     Column(
@@ -137,7 +164,7 @@ class _MedicineState extends State<Medicine> {
                               ),
                             ))
                       ],
-                    ),
+                    ), //copy?
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -160,20 +187,25 @@ class _MedicineState extends State<Medicine> {
                                 iconColor: Colors.lightBlueAccent,
                                 value: simpleIntInput,
                                 onChanged: (value) => setState(() =>
-                                    simpleIntInput =
-                                        int.parse(value.replaceAll(',', ''))),
+                                simpleIntInput =
+                                    int.parse(value.replaceAll(',', ''))),
                               ),
                             )
                           ],
                         ),
                       ],
                     ),
-                  ],
+
+
+
+]
+                        )
+              )
+                      ],
                 ),
               ),
-            ],
           ),
-        )));
+        );
   }
 }
 
@@ -196,35 +228,17 @@ class Title extends StatelessWidget {
   }
 }
 
-class MedicineTypeRow extends StatelessWidget {
-  const MedicineTypeRow(
-      {Key? key,
-      required this.medicineType,
-      required this.iconValue,
-      required this.isSelected})
-      : super(key: key);
-  final MedicineType medicineType;
-  final String iconValue;
-  final bool isSelected;
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-          height: 40,
-          width: 41,
-          margin: EdgeInsets.only(right: 9, top: 30),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.lightGreenAccent.shade100 : Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.all(1),
-              child: Image.asset(iconValue),
-            ),
-          )),
-    );
-  }
+Future savePill() async {
+  Pill pill = Pill(
+    amount: amountController.text,
+    howManyWeeks: howManyWeeks,
+    medicineForm: medicineTypes[medicineTypes.indexWhere((element) => element.isChoose == true)].name,
+    name: nameController.text,
+    time: setDate.millisecondsSinceEpoch,
+    type: selectWeight,
+  );
 }
+
+
+
