@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meddico/components/medcount.dart';
+import 'package:meddico/Models/medicine_type.dart';
 import 'package:quantity_input/quantity_input.dart';
 
 class Medicine extends StatefulWidget {
@@ -21,15 +21,13 @@ class _MedicineState extends State<Medicine> {
     amountController.dispose();
   }
 
-
   @override
   void initState() {
-
     super.initState();
     nameController = TextEditingController();
     amountController = TextEditingController();
-
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
@@ -73,7 +71,7 @@ class _MedicineState extends State<Medicine> {
                     SizedBox(
                       height: 12,
                     ),
-                    Column(
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
@@ -84,14 +82,41 @@ class _MedicineState extends State<Medicine> {
                           child: Text('Pills Name',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 19)),
-                        )
+                        ),
+                        StreamBuilder(builder: (context, snapshot) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              MedicineTypeRow(
+                                  medicineType: MedicineType.pill,
+                                  iconValue: 'lib/images/drug (1).png',
+                                  isSelected: snapshot.data == MedicineType.pill
+                                      ? true
+                                      : false),
+                              MedicineTypeRow(
+                                  medicineType: MedicineType.bottle,
+                                  iconValue: 'lib/images/bottle.png',
+                                  isSelected:
+                                      snapshot.data == MedicineType.bottle
+                                          ? true
+                                          : false),
+                              MedicineTypeRow(
+                                  medicineType: MedicineType.tablet,
+                                  iconValue: 'lib/images/pills (1).png',
+                                  isSelected:
+                                      snapshot.data == MedicineType.tablet
+                                          ? true
+                                          : false)
+                            ],
+                          );
+                        })
                       ],
                     ),
                     Column(
                       children: [
                         Container(
                             padding: EdgeInsets.only(left: 5, right: 12),
-                            margin: EdgeInsets.only(top: 73.5, left: 12),
+                            margin: EdgeInsets.only(top: 83.5, left: 12),
                             child: Container(
                               decoration: BoxDecoration(boxShadow: [
                                 BoxShadow(
@@ -140,7 +165,7 @@ class _MedicineState extends State<Medicine> {
                               ),
                             )
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -167,6 +192,39 @@ class Title extends StatelessWidget {
         TextSpan(
             text: isRequired ? " *" : "", style: TextStyle(color: Colors.white))
       ])),
+    );
+  }
+}
+
+class MedicineTypeRow extends StatelessWidget {
+  const MedicineTypeRow(
+      {Key? key,
+      required this.medicineType,
+      required this.iconValue,
+      required this.isSelected})
+      : super(key: key);
+  final MedicineType medicineType;
+  final String iconValue;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+          height: 40,
+          width: 41,
+          margin: EdgeInsets.only(right: 9, top: 30),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.lightGreenAccent.shade100 : Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(1),
+              child: Image.asset(iconValue),
+            ),
+          )),
     );
   }
 }

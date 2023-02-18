@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meddico/Screen/HomeScreen/homescreen.dart';
 import 'package:meddico/Screen/Medicine/medicine.dart';
 import 'package:meddico/Screen/Profile/profile.dart';
@@ -7,7 +9,9 @@ import 'package:meddico/Screen/bottomnav.dart';
 import 'package:meddico/Screen/LoginPage/LoginPage.dart';
 import 'package:meddico/main.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

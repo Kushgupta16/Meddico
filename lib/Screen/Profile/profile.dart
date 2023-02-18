@@ -15,34 +15,32 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
     child: ListView(
     children: <Widget>[
-    SizedBox(
-    height: 20,
-    ),
+    SizedBox(height: 20,),
+
     nameTextField(),
-    SizedBox(
-    height: 20,
-    ),
+
+    SizedBox(height: 20,),
+
     professionTextField(),
-    SizedBox(
-    height: 20,
-    ),
+
+    SizedBox(height: 20,),
+
     dobField(),
-    SizedBox(
-    height: 20,
-    ),
+
+    SizedBox(height: 20,),
+
     titleTextField(),
-    SizedBox(
-    height: 20,
-    ),
+
+    SizedBox(height: 20,),
+
     aboutTextField(),
-    SizedBox(
-    height: 20,
-    ),
+
+    SizedBox(height: 20,),
 
     ]
     )
@@ -81,7 +79,6 @@ class _ProfileState extends State<Profile> {
     return TextFormField(
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white),
-
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -197,7 +194,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.lightBlueAccent,
               width: 2,
             )),
-        labelText: "About",
+        labelText: "Allergen Info",
         labelStyle: TextStyle(color: Colors.lightBlueAccent),
         helperText: "Write about yourself",
         hintText: "I am Dev Stack",
