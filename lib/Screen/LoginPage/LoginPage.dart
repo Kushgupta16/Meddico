@@ -5,6 +5,7 @@ import 'package:meddico/components/my_button.dart';
 import 'package:meddico/components/my_textfield.dart';
 import 'package:meddico/components/square_tile.dart';
 import 'package:meddico/services/auth_service.dart';
+import 'package:meddico/Screen/bottomnav.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -33,7 +34,8 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text,
       );
 
-      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Bottomnav()));
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
 

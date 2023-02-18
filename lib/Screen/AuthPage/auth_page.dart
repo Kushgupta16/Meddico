@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:meddico/Screen/LoginPage/LoginPage.dart';
 import 'package:meddico/Screen/bottomnav.dart';
 import 'package:meddico/main.dart';
-import 'package:meddico/Screen/Home Page/home_page.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -15,7 +14,7 @@ class AuthPage extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return HomePage();
+            return Bottomnav();
           } else {
             return LoginPage();
           }
