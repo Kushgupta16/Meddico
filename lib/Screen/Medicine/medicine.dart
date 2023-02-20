@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:meddico/Models/medicine_type.dart';
 import 'package:meddico/Models/pill.dart';
+import 'package:meddico/Screen/Medicine/button.dart';
 import 'package:meddico/Screen/Medicine/fields.dart';
 import 'package:meddico/Screen/Medicine/medicinecard.dart';
 import 'package:quantity_input/quantity_input.dart';
@@ -18,8 +20,8 @@ class Medicine extends StatefulWidget {
 }
 
 class _MedicineState extends State<Medicine> {
-  late TextEditingController nameController;
-  late TextEditingController amountController;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
 
   final List<MedicineType> medicineTypes = [
     MedicineType("Syrup", Image.asset("lib/images/bottle.png"), true),
@@ -28,20 +30,29 @@ class _MedicineState extends State<Medicine> {
     MedicineType("Syringe", Image.asset("lib/images/injection.png"), false),
   ];
 
-  int simpleIntInput = 1;
-  @override
-  void dispose() {
-    super.dispose();
-    nameController.dispose();
-    amountController.dispose();
-  }
+  final List<String> weightValues = ["pills", "ml", "mg"];
+
+  int howManyWeeks = 1;
+  late String selectWeight;
+  DateTime setDate = DateTime.now();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+
+
+  Future initNotifies() async => flutterLocalNotificationsPlugin =
+      await _notifications.initNotifies(context);
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController();
-    amountController = TextEditingController();
+    selectWeight = weightValues[0];
+    initNotifies();
   }
+
+
+  Future initNotifies() async => flutterLocalNotificationsPlugin =
+  await _notifications.initNotifies(context);
+
 
   void medicineTypeClick(MedicineType medicine) {
     setState(() {
@@ -104,7 +115,12 @@ class _MedicineState extends State<Medicine> {
                             amountController),
                       ),
                     ),
-                    Container()
+                    Container(
+                      child: Button(
+                          handler: () => savePill(),
+                        buttonChild: Icon(Icons.done_outline_outlined),
+                        color: Colors.green,
+                      )
                   ]))
             ],
           ),
@@ -127,7 +143,7 @@ Future savePill() async {
       notifyId: Random().nextInt(10000000));
 
   for (int i = 0; i < howManyWeeks; i++) {
-    dynamic result = await _repo.insertData("Pills", pill.pillToMap());
+    dynamic result = await _repo.insertData("Pills", pill.pilltoMap());
     if (result == null) {
       snackbar.showSnack("Something went wrong", _scaffoldKey, null);
       return;

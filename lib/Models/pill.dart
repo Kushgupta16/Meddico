@@ -9,26 +9,26 @@ class Pill{
   int notifyId;
 
   Pill({
-    this.id,
-    this.name,
-    this.amount,
-    this.type,
-    this.howManyWeeks,
-    this.medicineForm,
-    this.time,
-    this.notifyId
+    required this.id,
+    required this.name,
+    required this.amount,
+    required this.type,
+    required this.howManyWeeks,
+    required this.medicineForm,
+    required this.time,
+    required this.notifyId
   });
 
   Map<String, dynamic>pilltoMap(){
-    Map<String, dynamic> map= Map();
-    map['id'] = this.id;
-    map['name'] = this.name;
-    map['amount'] = this.amount;
-    map['type'] = this.type;
-    map['howManyWeeks'] = this.howManyWeeks;
-    map['medicineform'] = this.medicineForm;
-    map['time'] = this.time;
-    map['notifyId'] = this.notifyId;
+    Map<String, dynamic> map= {};
+    map['id'] = id;
+    map['name'] = name;
+    map['amount'] = amount;
+    map['type'] = type;
+    map['howManyWeeks'] = howManyWeeks;
+    map['medicineform'] = medicineForm;
+    map['time'] = time;
+    map['notifyId'] = notifyId;
     return map;
   }
 

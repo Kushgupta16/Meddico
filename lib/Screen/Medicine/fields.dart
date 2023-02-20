@@ -49,16 +49,18 @@ class FormFields extends StatelessWidget {
                         children: <Widget>[
                           ...medicineTypes.map((type) =>
                               MedicineCard(type, medicineTypeClick))
-                        ])),
+                        ]
+                    )
+                ),
               ],
             ),
                 Container(
-              child: Column(
+                  child: Column(
                children: [
-          Container(
+                  Container(
                 padding: EdgeInsets.only(left: 5, right: 12),
                 margin: EdgeInsets.only(top: 83.5, left: 12),
-                child: Container(
+                  child: Container(
                   decoration: BoxDecoration(boxShadow: [
                     BoxShadow(
                         blurRadius: 20,
@@ -143,6 +145,24 @@ class FormFields extends StatelessWidget {
                   ))
             ],
           ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                "For How Long ?",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+          ),
+          Container(
+            child: UserSlider(this.onSliderChanged,this.howManyWeeks),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text('$howManyWeeks weeks'),
+          )
         ],
       ),]
         )
