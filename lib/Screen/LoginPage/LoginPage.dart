@@ -160,7 +160,32 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SquareTile(
-                    onTap: () => AuthService().signInWithGoogle(),
+                    onTap: () async {
+                      UserCredential? userCredential =
+                          await AuthService.signInWithGoogle();
+                      if (userCredential != null) {
+                        print(
+                            'Signed in with Google: ${userCredential.user!.displayName}');
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => Bottomnav()),
+                          (Route<dynamic> route) => false,
+                        );
+                      } else {
+                        print('Google sign-in failed');
+                      }
+                    },
+
+                    // onTap: () async {
+                    //   UserCredential? userCredential =
+                    //       await AuthService.signInWithGoogle();
+                    //   if (userCredential != null) {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) => Bottomnav()),
+                    //     );
+                    //   }
+                    // },
                     imagePath: 'lib/images/google.png',
                   ),
                 ],
