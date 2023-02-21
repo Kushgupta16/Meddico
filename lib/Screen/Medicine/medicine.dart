@@ -1,6 +1,18 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:meddico/Models/medicine_type.dart';
+import 'package:meddico/Models/pill.dart';
+import 'package:meddico/Screen/Medicine/button.dart';
+import 'package:meddico/Screen/Medicine/fields.dart';
+import 'package:meddico/Screen/Medicine/medicinecard.dart';
 import 'package:quantity_input/quantity_input.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:intl/intl.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:meddico/notifications/notifications.dart';
+
 
 class Medicine extends StatefulWidget {
   const Medicine({Key? key}) : super(key: key);
@@ -10,32 +22,56 @@ class Medicine extends StatefulWidget {
 }
 
 class _MedicineState extends State<Medicine> {
-  late TextEditingController nameController;
-  late TextEditingController amountController;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  int simpleIntInput = 1;
-  @override
-  void dispose() {
-    super.dispose();
-    nameController.dispose();
-    amountController.dispose();
-  }
+
+  final List<MedicineType> medicineTypes = [
+    MedicineType("Syrup", Image.asset("lib/images/bottle.png"), true),
+    MedicineType("Pill", Image.asset("lib/images/drug (1).png"), false),
+    MedicineType("Tablet", Image.asset("lib/images/pills (1).png"), false),
+    MedicineType("Syringe", Image.asset("lib/images/injection.png"), false),
+  ];
+
+  final List<String> weightValues = ["pills", "ml", "mg"];
+
+  int howManyWeeks = 1;
+  late String selectWeight;
+  DateTime setDate = DateTime.now();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+
+
+  Future initNotifies() async => flutterLocalNotificationsPlugin =
+      await _notifications.initNotifies(context);
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController();
-    amountController = TextEditingController();
+    selectWeight = weightValues[0];
+    initNotifies();
+  }
+
+
+  Future initNotifies() async => flutterLocalNotificationsPlugin =
+  await _notifications.initNotifies(context);
+
+
+  void medicineTypeClick(MedicineType medicine) {
+    setState(() {
+      medicineTypes.forEach((medicineType) => medicineType.isChoose = false);
+      medicineTypes[medicineTypes.indexOf(medicine)].isChoose = true;
+    });
   }
 
   Widget build(BuildContext context) {
+    final focus = FocusScope.of(context);
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(23, 23, 23, 1),
-        ),
-        body: SingleChildScrollView(
-            child: Container(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(23, 23, 23, 1),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
           child: Stack(
             children: <Widget>[
               Image.asset(
@@ -51,11 +87,9 @@ class _MedicineState extends State<Medicine> {
                         fontWeight: FontWeight.bold)),
               ),
               Container(
-                margin: EdgeInsets.only(top: 420, right: 13, left: 13),
-                height: 400,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
+                  margin: EdgeInsets.only(top: 420, right: 13, left: 13),
+                  height: 400,
+                  child: Stack(fit: StackFit.expand, children: [
                     Container(
                       padding: EdgeInsets.only(left: 50, right: 50),
                       decoration: BoxDecoration(
@@ -71,160 +105,165 @@ class _MedicineState extends State<Medicine> {
                     SizedBox(
                       height: 12,
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: 35,
-                          ),
-                          padding: EdgeInsets.only(left: 35, right: 50),
-                          child: Text('Pills Name',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 19)),
-                        ),
-                        StreamBuilder(builder: (context, snapshot) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              MedicineTypeRow(
-                                  medicineType: MedicineType.pill,
-                                  iconValue: 'lib/images/drug (1).png',
-                                  isSelected: snapshot.data == MedicineType.pill
-                                      ? true
-                                      : false),
-                              MedicineTypeRow(
-                                  medicineType: MedicineType.bottle,
-                                  iconValue: 'lib/images/bottle.png',
-                                  isSelected:
-                                      snapshot.data == MedicineType.bottle
-                                          ? true
-                                          : false),
-                              MedicineTypeRow(
-                                  medicineType: MedicineType.tablet,
-                                  iconValue: 'lib/images/pills (1).png',
-                                  isSelected:
-                                      snapshot.data == MedicineType.tablet
-                                          ? true
-                                          : false)
-                            ],
-                          );
-                        })
-                      ],
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: FormFields(
+                            howManyWeeks,
+                            selectWeight,
+                            popUpMenuItemChanged,
+                            sliderChanged,
+                            nameController,
+                            amountController),
+                      ),
                     ),
-                    Column(
-                      children: [
-                        Container(
-                            padding: EdgeInsets.only(left: 5, right: 12),
-                            margin: EdgeInsets.only(top: 83.5, left: 12),
-                            child: Container(
-                              decoration: BoxDecoration(boxShadow: [
-                                BoxShadow(
-                                    blurRadius: 20,
-                                    color: Colors.white.withOpacity(0.1))
-                              ]),
-                              child: TextFormField(
-                                controller: nameController,
-                                cursorColor: Colors.black,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
-                              ),
-                            ))
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 171),
-                          padding: EdgeInsets.only(left: 35),
-                          child: Text(
-                            'Amount',
-                            style: TextStyle(
-                                fontSize: 19, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Column(
+                    Container(
+                      child: Button(
+                        handler: () => openTimePicker(),
+                        buttonChild: Row(
                           children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 76, top: 160),
-                              child: QuantityInput(
-                                inputWidth: 100,
-                                buttonColor: Colors.white.withOpacity(0.9),
-                                iconColor: Colors.lightBlueAccent,
-                                value: simpleIntInput,
-                                onChanged: (value) => setState(() =>
-                                    simpleIntInput =
-                                        int.parse(value.replaceAll(',', ''))),
-                              ),
+                            Text(DateFormat.Hm().format(this.setDate),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                            ),
+                            Icon(
+                              Icons.access_time_filled,
+                                  size: 30,
+                              color: Colors.cyanAccent,
                             )
                           ],
                         ),
-                      ],
+                        color: Color.fromRGBO(7, 190, 200, 0.1),
+                      ),
+
                     ),
-                  ],
-                ),
-              ),
+                    Expanded(
+                        child: Container(
+                          child: Button(
+                            handler: () => openDatePicker(),
+                            buttonChild: Row(
+                              children: [
+                                Text(
+                                  DataFormat("dd.MM").format(this.setDate),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Icon(Icons.event,
+                                size: 30,
+                                color: Colors.blue,)
+                              ],
+                            ),
+                            color: Color.fromRGBO(7, 190, 200, 0.1),
+                          ),
+                        )),
+                    Container(
+                      child: Button(
+                          handler: () => savePill(),
+                        buttonChild: Icon(Icons.done_outline_outlined,
+                        size: 20,
+                        color: Colors.black,),
+                        color: Colors.green,
+                      )
+                    )
+                  ]))
             ],
           ),
-        )));
-  }
-}
-
-class Title extends StatelessWidget {
-  const Title({Key? key, required this.title, required this.isRequired})
-      : super(key: key);
-  final String title;
-  final bool isRequired;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 16),
-      child: Text.rich(TextSpan(children: <TextSpan>[
-        TextSpan(text: title, style: TextStyle(color: Colors.white)),
-        TextSpan(
-            text: isRequired ? " *" : "", style: TextStyle(color: Colors.white))
-      ])),
+        ),
+      ),
     );
   }
 }
+Future savePill() async {
+  Pill pill = Pill(
+    id: nameController.text,
+      amount: amountController.text,
+      howManyWeeks: howManyWeeks,
+      medicineForm: medicineTypes[
+              medicineTypes.indexWhere((element) => element.isChoose == true)]
+          .name,
+      name: nameController.text,
+      time: setDate.millisecondsSinceEpoch,
+      type: selectWeight,
+      notifyId: Random().nextInt(10000000));
 
-class MedicineTypeRow extends StatelessWidget {
-  const MedicineTypeRow(
-      {Key? key,
-      required this.medicineType,
-      required this.iconValue,
-      required this.isSelected})
-      : super(key: key);
-  final MedicineType medicineType;
-  final String iconValue;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-          height: 40,
-          width: 41,
-          margin: EdgeInsets.only(right: 9, top: 30),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.lightGreenAccent.shade100 : Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.all(1),
-              child: Image.asset(iconValue),
-            ),
-          )),
-    );
+  for (int i = 0; i < howManyWeeks; i++) {
+    dynamic result = await _repo.insertData("Pills", pill.pilltoMap());
+    if (result == null) {
+      snackbar.showSnack("Something went wrong", _scaffoldKey, null);
+      return;
+    } else {
+      tz.initializeTimeZones();
+      tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
+      await _notifications.showNotification(
+          pill.name,
+          pill.amount + " " + pill.medicineForm + " " + pill.type,
+          time,
+          pill.notifyId,
+          flutterLocalNotificationsPlugin);
+      setDate = setDate.add(Duration(milliseconds: 604800000));
+      pill.time = setDate.millisecondsSinceEpoch;
+      pill.notifyId = Random().nextInt(10000000);
+    }
   }
+  snackbar.showSnack("Saved", _scaffoldKey, null);
+  Navigator.pop(context);
+}
+
+void medicineTypeClick(MedicineType medicine) {
+  setState(() {
+    medicineTypes.forEach((medicineType) => medicineType.isChoose = false);
+    medicineTypes[medicineTypes.indexOf(medicine)].isChoose = true;
+  });
+}
+
+int get time =>
+    setDate.millisecondsSinceEpoch -
+    tz.TZDateTime.now(tz.local).millisecondsSinceEpoch;
+
+void sliderChanged(double value) =>
+    setState(() => this.howManyWeeks = value.round());
+
+void popUpMenuItemChanged(String value) =>
+    setState(() => this.selectWeight = value);
+
+Future<void> openTimePicker() async {
+  await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.now(),
+          helpText: "Choose Time")
+      .then((value) {
+    DateTime newDate = DateTime(
+        setDate.year,
+        setDate.month,
+        setDate.day,
+        value != null ? value.hour : setDate.hour,
+        value != null ? value.minute : setDate.minute);
+    setState(() => setDate = newDate);
+    print(newDate.hour);
+    print(newDate.minute);
+  });
+}
+
+Future<void> openDatePicker() async {
+  await showDatePicker(
+          context: context,
+          initialDate: setDate,
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(Duration(days: 100000)))
+      .then((value) {
+    DateTime newDate = DateTime(
+        value != null ? value.year : setDate.year,
+        value != null ? value.month : setDate.month,
+        value != null ? value.day : setDate.day,
+        setDate.hour,
+        setDate.minute);
+    setState(() => setDate = newDate);
+    print(setDate.day);
+    print(setDate.month);
+    print(setDate.year);
+  });
 }
