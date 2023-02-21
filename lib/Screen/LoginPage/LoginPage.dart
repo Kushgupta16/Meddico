@@ -18,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  BuildContext? get credential => null;
+
   void signUserIn() async {
     showDialog(
       context: context,
