@@ -11,6 +11,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:meddico/notifications/notifications.dart';
+
 
 class Medicine extends StatefulWidget {
   const Medicine({Key? key}) : super(key: key);
@@ -117,10 +119,56 @@ class _MedicineState extends State<Medicine> {
                     ),
                     Container(
                       child: Button(
+                        handler: () => openTimePicker(),
+                        buttonChild: Row(
+                          children: [
+                            Text(DateFormat.Hm().format(this.setDate),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                            ),
+                            Icon(
+                              Icons.access_time_filled,
+                                  size: 30,
+                              color: Colors.cyanAccent,
+                            )
+                          ],
+                        ),
+                        color: Color.fromRGBO(7, 190, 200, 0.1),
+                      ),
+
+                    ),
+                    Expanded(
+                        child: Container(
+                          child: Button(
+                            handler: () => openDatePicker(),
+                            buttonChild: Row(
+                              children: [
+                                Text(
+                                  DataFormat("dd.MM").format(this.setDate),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Icon(Icons.event,
+                                size: 30,
+                                color: Colors.blue,)
+                              ],
+                            ),
+                            color: Color.fromRGBO(7, 190, 200, 0.1),
+                          ),
+                        )),
+                    Container(
+                      child: Button(
                           handler: () => savePill(),
-                        buttonChild: Icon(Icons.done_outline_outlined),
+                        buttonChild: Icon(Icons.done_outline_outlined,
+                        size: 20,
+                        color: Colors.black,),
                         color: Colors.green,
                       )
+                    )
                   ]))
             ],
           ),
@@ -129,9 +177,9 @@ class _MedicineState extends State<Medicine> {
     );
   }
 }
-
 Future savePill() async {
   Pill pill = Pill(
+    id: nameController.text,
       amount: amountController.text,
       howManyWeeks: howManyWeeks,
       medicineForm: medicineTypes[
