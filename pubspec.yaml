@@ -41,7 +41,7 @@ dependencies:
   get: ^4.6.5
   google_sign_in: ^5.4.3
   quantity_input: ^1.0.2
-
+  shared_preferences: ^2.0.6
 
 dev_dependencies:
   flutter_test:
