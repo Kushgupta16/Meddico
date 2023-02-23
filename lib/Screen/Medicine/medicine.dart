@@ -1,10 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:meddico/Database/repository.dart';
 import 'package:meddico/Models/medicine_type.dart';
 import 'package:meddico/Models/pill.dart';
 import 'package:meddico/Screen/Medicine/button.dart';
 import 'package:meddico/Screen/Medicine/fields.dart';
 import 'package:meddico/Screen/Medicine/medicinecard.dart';
+import 'package:meddico/Screen/Medicine/snackbar.dart';
 import 'package:quantity_input/quantity_input.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -25,6 +27,10 @@ class _MedicineState extends State<Medicine> {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final Snackbar snackbar = Snackbar();
+
+
   final List<MedicineType> medicineTypes = [
     MedicineType("Syrup", Image.asset("lib/images/bottle.png"), true),
     MedicineType("Pill", Image.asset("lib/images/drug (1).png"), false),
@@ -40,6 +46,10 @@ class _MedicineState extends State<Medicine> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
+  final Repository _repository = Repository();
+  final Notifications _notifications = Notifications();
+
+
 
   Future initNotifies() async => flutterLocalNotificationsPlugin =
       await _notifications.initNotifies(context);
@@ -51,21 +61,10 @@ class _MedicineState extends State<Medicine> {
     initNotifies();
   }
 
-
-  Future initNotifies() async => flutterLocalNotificationsPlugin =
-  await _notifications.initNotifies(context);
-
-
-  void medicineTypeClick(MedicineType medicine) {
-    setState(() {
-      medicineTypes.forEach((medicineType) => medicineType.isChoose = false);
-      medicineTypes[medicineTypes.indexOf(medicine)].isChoose = true;
-    });
-  }
-
   Widget build(BuildContext context) {
     final focus = FocusScope.of(context);
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(23, 23, 23, 1),
@@ -146,7 +145,7 @@ class _MedicineState extends State<Medicine> {
                             buttonChild: Row(
                               children: [
                                 Text(
-                                  DataFormat("dd.MM").format(this.setDate),
+                                  DateFormat("dd.MM").format(this.setDate),
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
@@ -176,94 +175,96 @@ class _MedicineState extends State<Medicine> {
       ),
     );
   }
-}
-Future savePill() async {
-  Pill pill = Pill(
-    id: nameController.text,
-      amount: amountController.text,
-      howManyWeeks: howManyWeeks,
-      medicineForm: medicineTypes[
-              medicineTypes.indexWhere((element) => element.isChoose == true)]
-          .name,
-      name: nameController.text,
-      time: setDate.millisecondsSinceEpoch,
-      type: selectWeight,
-      notifyId: Random().nextInt(10000000));
 
-  for (int i = 0; i < howManyWeeks; i++) {
-    dynamic result = await _repo.insertData("Pills", pill.pilltoMap());
-    if (result == null) {
-      snackbar.showSnack("Something went wrong", _scaffoldKey, null);
-      return;
-    } else {
-      tz.initializeTimeZones();
-      tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
-      await _notifications.showNotification(
-          pill.name,
-          pill.amount + " " + pill.medicineForm + " " + pill.type,
-          time,
-          pill.notifyId,
-          flutterLocalNotificationsPlugin);
-      setDate = setDate.add(Duration(milliseconds: 604800000));
-      pill.time = setDate.millisecondsSinceEpoch;
-      pill.notifyId = Random().nextInt(10000000);
+  Future savePill() async {
+
+
+    Pill pill = Pill(
+        amount: amountController.text,
+        howManyWeeks: howManyWeeks,
+        medicineForm: medicineTypes[
+        medicineTypes.indexWhere((element) => element.isChoose == true)].name,
+        name: nameController.text,
+        time: setDate.millisecondsSinceEpoch,
+        type: selectWeight,
+        notifyId: Random().nextInt(10000000));
+
+    for (int i = 0; i < howManyWeeks; i++) {
+      dynamic result = await _repository.insertData("Pills", pill.pilltoMap());
+      if (result == null) {
+        snackbar.showSnack("Something went wrong", _scaffoldKey, () {});
+        return;
+      } else {
+        tz.initializeTimeZones();
+        tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
+        await _notifications.showNotifications(
+            pill.name,
+            pill.amount + " " + pill.medicineForm + " " + pill.type,
+            time,
+            pill.notifyId,
+            flutterLocalNotificationsPlugin);
+        setDate = setDate.add(Duration(milliseconds: 604800000));
+        pill.time = setDate.millisecondsSinceEpoch;
+        pill.notifyId = Random().nextInt(10000000);
+      }
     }
+    snackbar.showSnack("Saved", _scaffoldKey, () {});
+    Navigator.pop(context);
   }
-  snackbar.showSnack("Saved", _scaffoldKey, null);
-  Navigator.pop(context);
-}
 
-void medicineTypeClick(MedicineType medicine) {
-  setState(() {
-    medicineTypes.forEach((medicineType) => medicineType.isChoose = false);
-    medicineTypes[medicineTypes.indexOf(medicine)].isChoose = true;
-  });
-}
+  void medicineTypeClick(MedicineType medicine) {
+    setState(() {
+      medicineTypes.forEach((medicineType) => medicineType.isChoose = false);
+      medicineTypes[medicineTypes.indexOf(medicine)].isChoose = true;
+    });
+  }
 
-int get time =>
-    setDate.millisecondsSinceEpoch -
-    tz.TZDateTime.now(tz.local).millisecondsSinceEpoch;
+  int get time =>
+      setDate.millisecondsSinceEpoch -
+          tz.TZDateTime.now(tz.local).millisecondsSinceEpoch;
 
-void sliderChanged(double value) =>
-    setState(() => this.howManyWeeks = value.round());
+  void sliderChanged(double value) =>
+      setState(() => this.howManyWeeks = value.round());
 
-void popUpMenuItemChanged(String value) =>
-    setState(() => this.selectWeight = value);
+  void popUpMenuItemChanged(String value) =>
+      setState(() => this.selectWeight = value);
 
-Future<void> openTimePicker() async {
-  await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.now(),
-          helpText: "Choose Time")
-      .then((value) {
-    DateTime newDate = DateTime(
-        setDate.year,
-        setDate.month,
-        setDate.day,
-        value != null ? value.hour : setDate.hour,
-        value != null ? value.minute : setDate.minute);
-    setState(() => setDate = newDate);
-    print(newDate.hour);
-    print(newDate.minute);
-  });
-}
+  Future<void> openTimePicker() async {
+    await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        helpText: "Choose Time")
+        .then((value) {
+      DateTime newDate = DateTime(
+          setDate.year,
+          setDate.month,
+          setDate.day,
+          value != null ? value.hour : setDate.hour,
+          value != null ? value.minute : setDate.minute);
+      setState(() => setDate = newDate);
+      print(newDate.hour);
+      print(newDate.minute);
+    });
+  }
 
-Future<void> openDatePicker() async {
-  await showDatePicker(
-          context: context,
-          initialDate: setDate,
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(Duration(days: 100000)))
-      .then((value) {
-    DateTime newDate = DateTime(
-        value != null ? value.year : setDate.year,
-        value != null ? value.month : setDate.month,
-        value != null ? value.day : setDate.day,
-        setDate.hour,
-        setDate.minute);
-    setState(() => setDate = newDate);
-    print(setDate.day);
-    print(setDate.month);
-    print(setDate.year);
-  });
+  Future<void> openDatePicker() async {
+    await showDatePicker(
+        context: context,
+        initialDate: setDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(Duration(days: 100000)))
+        .then((value) {
+      DateTime newDate = DateTime(
+          value != null ? value.year : setDate.year,
+          value != null ? value.month : setDate.month,
+          value != null ? value.day : setDate.day,
+          setDate.hour,
+          setDate.minute);
+      setState(() => setDate = newDate);
+      print(setDate.day);
+      print(setDate.month);
+      print(setDate.year);
+    });
+  }
+
 }
