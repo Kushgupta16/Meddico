@@ -26,8 +26,11 @@ class MyApp extends StatelessWidget {
       // home: Bottomnav(),
       routes: {
         "/": (context) => LoginPage(),
-        "/login": (context) => LoginPage(),
+        "/bottom":(context) => Bottomnav(),
+        "/home": (context) => Homescreen(),
+        "/medicine": (context) => Medicine(),
       },
+      initialRoute: "/bottom",
     );
   }
 }

@@ -15,7 +15,8 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body:Text('Text')
+      body:Text('Text',
+      style: TextStyle(color: Colors.white),)
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:meddico/Models/medicine_type.dart';
 import 'package:meddico/Models/pill.dart';
 import 'package:meddico/Screen/Medicine/medicine.dart';
 import 'package:meddico/Screen/Medicine/medicinecard.dart';
+import 'package:meddico/Screen/Medicine/slider.dart';
 import 'package:quantity_input/quantity_input.dart';
 
 class FormFields extends StatelessWidget {
@@ -31,35 +32,25 @@ class FormFields extends StatelessWidget {
         builder: (context,constrains)=>Column(
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
+                  width: 12,
                   margin: EdgeInsets.only(
-                    top: 35,
+                    top: 3,
                   ),
                   padding: EdgeInsets.only(left: 35, right: 50),
                   child: Text('Pills Name',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 19)),
                 ),
-                Container(
-                    height: 12,
-                    child: ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          ...medicineTypes.map((type) =>
-                              MedicineCard(type, medicineTypeClick))
-                        ]
-                    )
-                ),
               ],
             ),
                 Container(
+                  width: 12,
                   child: Column(
                children: [
                   Container(
-                padding: EdgeInsets.only(left: 5, right: 12),
-                margin: EdgeInsets.only(top: 83.5, left: 12),
+
                   child: Container(
                   decoration: BoxDecoration(boxShadow: [
                     BoxShadow(
@@ -122,7 +113,7 @@ class FormFields extends StatelessWidget {
                       onFieldSubmitted: (val)=>focus.unfocus(),
                     ),
                   )),
-              Flexible(flex: 1,
+              Flexible(fit: FlexFit.tight,
                   child: Container(
                     child: DropdownButtonFormField(
                       onTap: ()=>focus.unfocus(),
@@ -157,7 +148,7 @@ class FormFields extends StatelessWidget {
             ),
           ),
           Container(
-            child: UserSlider(this.onSliderChanged,this.howManyWeeks),
+            child: User_Slider(this.onSliderChanged,this.howManyWeeks),
           ),
           Align(
             alignment: Alignment.bottomRight,
@@ -168,5 +159,7 @@ class FormFields extends StatelessWidget {
         )
     );
 
+
   }
 }
+

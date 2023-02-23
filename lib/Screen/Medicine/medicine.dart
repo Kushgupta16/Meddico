@@ -25,6 +25,11 @@ class _MedicineState extends State<Medicine> {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
   final List<MedicineType> medicineTypes = [
     MedicineType("Syrup", Image.asset("lib/images/bottle.png"), true),
     MedicineType("Pill", Image.asset("lib/images/drug (1).png"), false),
@@ -40,8 +45,17 @@ class _MedicineState extends State<Medicine> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
+<<<<<<< Updated upstream
 
   Future initNotifies() async => flutterLocalNotificationsPlugin =
+=======
+  final Repository _repository = Repository();
+  final Notifications _notifications = Notifications();
+
+
+  Future initNotifies() async =>
+      flutterLocalNotificationsPlugin =
+>>>>>>> Stashed changes
       await _notifications.initNotifies(context);
 
   @override
@@ -51,6 +65,7 @@ class _MedicineState extends State<Medicine> {
     initNotifies();
   }
 
+<<<<<<< Updated upstream
 
   Future initNotifies() async => flutterLocalNotificationsPlugin =
   await _notifications.initNotifies(context);
@@ -66,17 +81,22 @@ class _MedicineState extends State<Medicine> {
   Widget build(BuildContext context) {
     final focus = FocusScope.of(context);
     return Scaffold(
+=======
+  @override
+  Widget build(BuildContext context) {
+    final focus = FocusScope.of(context);
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+>>>>>>> Stashed changes
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(23, 23, 23, 1),
-      ),
-      body: SingleChildScrollView(
+
+      body: SafeArea(
         child: Container(
           child: Stack(
             children: <Widget>[
               Image.asset(
                 'lib/images/medicinepage.jpeg',
-                height: 500,
+                height: 50,
               ),
               Container(
                 margin: EdgeInsets.only(left: 24, top: 36),
@@ -87,11 +107,17 @@ class _MedicineState extends State<Medicine> {
                         fontWeight: FontWeight.bold)),
               ),
               Container(
-                  margin: EdgeInsets.only(top: 420, right: 13, left: 13),
-                  height: 400,
-                  child: Stack(fit: StackFit.expand, children: [
+                  margin: EdgeInsets.only(top: 20, right: 13, left: 13),
+                  height: 1,
+                  child:
+                  Flex(
+                    mainAxisSize: MainAxisSize.min,
+                      direction: Axis.vertical,
+                      children: [
                     Container(
-                      padding: EdgeInsets.only(left: 50, right: 50),
+                      height:12,
+                      width: 11,
+
                       decoration: BoxDecoration(
                           color: Colors.lightGreenAccent.shade100,
                           borderRadius: BorderRadius.circular(50),
@@ -103,11 +129,11 @@ class _MedicineState extends State<Medicine> {
                           ]),
                     ),
                     SizedBox(
-                      height: 12,
+                      height: 1,
                     ),
                     Container(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 1),
                         child: FormFields(
                             howManyWeeks,
                             selectWeight,
@@ -118,19 +144,33 @@ class _MedicineState extends State<Medicine> {
                       ),
                     ),
                     Container(
+
+                        child: SizedBox(
+                          height: 1.5,
+                          child: ListView(
+                              shrinkWrap: true,
+                              children: <Widget>[
+                                ...medicineTypes.map((type) =>
+                                    MedicineCard(type, medicineTypeClick))
+                              ]
+                          ),
+                        )
+                    ), //pill type select
+
+                    Container(
                       child: Button(
                         handler: () => openTimePicker(),
                         buttonChild: Row(
                           children: [
                             Text(DateFormat.Hm().format(this.setDate),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                            ),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                              ),
                             ),
                             Icon(
                               Icons.access_time_filled,
-                                  size: 30,
+                              size: 30,
                               color: Colors.cyanAccent,
                             )
                           ],
@@ -153,21 +193,21 @@ class _MedicineState extends State<Medicine> {
                                   ),
                                 ),
                                 Icon(Icons.event,
-                                size: 30,
-                                color: Colors.blue,)
+                                  size: 30,
+                                  color: Colors.blue,)
                               ],
                             ),
                             color: Color.fromRGBO(7, 190, 200, 0.1),
                           ),
                         )),
                     Container(
-                      child: Button(
+                        child: Button(
                           handler: () => savePill(),
-                        buttonChild: Icon(Icons.done_outline_outlined,
-                        size: 20,
-                        color: Colors.black,),
-                        color: Colors.green,
-                      )
+                          buttonChild: Icon(Icons.done_outline_outlined,
+                            size: 2,
+                            color: Colors.black,),
+                          color: Colors.green,
+                        )
                     )
                   ]))
             ],
@@ -176,6 +216,7 @@ class _MedicineState extends State<Medicine> {
       ),
     );
   }
+<<<<<<< Updated upstream
 }
 Future savePill() async {
   Pill pill = Pill(
@@ -199,6 +240,28 @@ Future savePill() async {
       tz.initializeTimeZones();
       tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
       await _notifications.showNotification(
+=======
+
+  Future savePill() async {
+    Pill pill = Pill(
+        amount: amountController.text,
+        howManyWeeks: howManyWeeks,
+        medicineForm: medicineTypes[
+        medicineTypes.indexWhere((element) => element.isChoose == true)].name,
+        name: nameController.text,
+        time: setDate.millisecondsSinceEpoch,
+        type: selectWeight,
+        notifyId: Random().nextInt(10000000),
+        id: 1); //ID??
+
+    for (int i = 0; i < howManyWeeks; i++) {
+      dynamic result = await _repository.insertData(
+          "Pills", pill.pilltoMap());
+
+      tz.initializeTimeZones();
+      tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
+      await _notifications.showNotifications(
+>>>>>>> Stashed changes
           pill.name,
           pill.amount + " " + pill.medicineForm + " " + pill.type,
           time,
@@ -209,6 +272,7 @@ Future savePill() async {
       pill.notifyId = Random().nextInt(10000000);
     }
   }
+<<<<<<< Updated upstream
   snackbar.showSnack("Saved", _scaffoldKey, null);
   Navigator.pop(context);
 }
@@ -266,4 +330,66 @@ Future<void> openDatePicker() async {
     print(setDate.month);
     print(setDate.year);
   });
+=======
+
+
+
+  void medicineTypeClick(MedicineType medicine) {
+    setState(() {
+      medicineTypes.forEach((medicineType) => medicineType.isChoose = false);
+      medicineTypes[medicineTypes.indexOf(medicine)].isChoose = true;
+    });
+  }
+
+  int get time =>
+      setDate.millisecondsSinceEpoch -
+          tz.TZDateTime
+              .now(tz.local)
+              .millisecondsSinceEpoch;
+
+  void sliderChanged(double value) =>
+      setState(() => this.howManyWeeks = value.round());
+
+  void popUpMenuItemChanged(String value) =>
+      setState(() => this.selectWeight = value);
+
+  Future<void> openTimePicker() async {
+    await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        helpText: "Choose Time")
+        .then((value) {
+      DateTime newDate = DateTime(
+          setDate.year,
+          setDate.month,
+          setDate.day,
+          value != null ? value.hour : setDate.hour,
+          value != null ? value.minute : setDate.minute);
+      setState(() => setDate = newDate);
+      print(newDate.hour);
+      print(newDate.minute);
+    });
+  }
+
+  Future<void> openDatePicker() async {
+    await showDatePicker(
+        context: context,
+        initialDate: setDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(Duration(days: 100000)))
+        .then((value) {
+      DateTime newDate = DateTime(
+          value != null ? value.year : setDate.year,
+          value != null ? value.month : setDate.month,
+          value != null ? value.day : setDate.day,
+          setDate.hour,
+          setDate.minute);
+      setState(() => setDate = newDate);
+      print(setDate.day);
+      print(setDate.month);
+      print(setDate.year);
+    });
+  }
+>>>>>>> Stashed changes
 }
+
