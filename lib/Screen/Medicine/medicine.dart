@@ -52,6 +52,8 @@ class _MedicineState extends State<Medicine> {
 
 
   Future initNotifies() async => flutterLocalNotificationsPlugin =
+  Future initNotifies() async =>
+      flutterLocalNotificationsPlugin =
       await _notifications.initNotifies(context);
 
   @override
@@ -65,6 +67,11 @@ class _MedicineState extends State<Medicine> {
     final focus = FocusScope.of(context);
     return Scaffold(
       key: _scaffoldKey,
+  @override
+  Widget build(BuildContext context) {
+    final focus = FocusScope.of(context);
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(23, 23, 23, 1),
@@ -207,6 +214,20 @@ class _MedicineState extends State<Medicine> {
         pill.time = setDate.millisecondsSinceEpoch;
         pill.notifyId = Random().nextInt(10000000);
       }
+      dynamic result = await _repository.insertData(
+          "Pills", pill.pilltoMap());
+
+      tz.initializeTimeZones();
+      tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
+      await _notifications.showNotifications(
+          pill.name,
+          pill.amount + " " + pill.medicineForm + " " + pill.type,
+          time,
+          pill.notifyId,
+          flutterLocalNotificationsPlugin);
+      setDate = setDate.add(Duration(milliseconds: 604800000));
+      pill.time = setDate.millisecondsSinceEpoch;
+      pill.notifyId = Random().nextInt(10000000);
     }
     snackbar.showSnack("Saved", _scaffoldKey, () {});
     Navigator.pop(context);
