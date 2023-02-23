@@ -6,20 +6,20 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:meddico/Models/pill.dart';
 
 class Notifications {
-   late BuildContext _context;
+  late BuildContext _context;
 
   Future<FlutterLocalNotificationsPlugin> initNotifies(
       BuildContext context) async {
-    _context = context;
+    this._context = context;
 
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('app_icon');
-    var initializationSettings = new InitializationSettings(
-      android: initializationSettingsAndroid,);
+    var initializationSettings =
+        new InitializationSettings(android: initializationSettingsAndroid);
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         new FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-    onSelectNotification: SelectNotification);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
     return flutterLocalNotificationsPlugin;
   }
 
@@ -32,7 +32,7 @@ class Notifications {
         tz.TZDateTime.now(tz.local).add(Duration(milliseconds: time)),
         const NotificationDetails(
             android: AndroidNotificationDetails(
-                'medicine_id', 'medicines', channelDescription: 'medicines_notification_channel',
+                'medicine_id', 'medicines', 'medicines_notification_channel',
                 importance: Importance.high,
                 priority: Priority.high,
                 color: Colors.cyan)),
@@ -50,7 +50,7 @@ class Notifications {
       }
     }
 
-    Future<dynamic>SelectNotification(String? payload) async {
+    Future onSelectNotification(String payload) async {
       showDialog(
         context: _context,
         builder: (_) {

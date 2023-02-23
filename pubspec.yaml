@@ -41,8 +41,9 @@ dependencies:
   get: ^4.6.5
   google_sign_in: ^5.4.3
   quantity_input: ^1.0.2
-  timezone: ^0.8.0
-  flutter_local_notifications: 9.9.1
+  shared_preferences: ^2.0.6
+  timezone: ^0.9.1
+  flutter_local_notifications: ^13.0.0
   sqflite: ^2.2.4+1
 
 
